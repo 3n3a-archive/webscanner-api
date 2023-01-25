@@ -3,6 +3,7 @@ package scanner
 import (
 	"errors"
 	"io/ioutil"
+	"reflect"
 	"time"
 
 	"github.com/3n3a/securitytxt-parser"
@@ -53,8 +54,12 @@ func (s *ScanClient) GetSecurityTxt() (SecurityTxtParser.SecurityTxt, error) {
 	// Parse .Txt
 	inputTxt := string(body)
 	st, err := SecurityTxtParser.ParseTxt(inputTxt)
-	if err != nil {
-		return SecurityTxtParser.SecurityTxt{}, err
+	if err != nil || reflect.DeepEqual(st, SecurityTxtParser.SecurityTxt{}) {
+		if err == nil {
+			return SecurityTxtParser.SecurityTxt{}, errors.New("no security.txt found")
+		} else {
+			return SecurityTxtParser.SecurityTxt{}, err
+		}
 	}
 
 	return st, nil
