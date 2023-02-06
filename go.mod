@@ -3,8 +3,10 @@ module github.com/3n3a/webscanner-api
 go 1.19
 
 require (
+	github.com/3n3a/robotstxt-parser v1.0.0
+	github.com/3n3a/securitytxt-parser v1.0.0
 	github.com/gin-gonic/gin v1.8.2
-	golang.org/x/exp v0.0.0-20230203172020-98cc5a0785f9
+	golang.org/x/exp v0.0.0-20230206171751-46f607a40771
 )
 
 require (
@@ -26,8 +28,6 @@ require (
 )
 
 require (
-	github.com/3n3a/robotstxt-parser v0.0.0-20230206182903-121e689d56f0
-	github.com/3n3a/securitytxt-parser v0.0.0-20230125202122-dc73f462c38f
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
