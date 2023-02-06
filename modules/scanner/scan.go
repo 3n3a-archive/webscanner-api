@@ -7,12 +7,12 @@ import (
 	"time"
 
 	"github.com/3n3a/securitytxt-parser"
+	"github.com/3n3a/robotstxt-parser"
 	"github.com/imroc/req/v3"
-	"github.com/temoto/robotstxt"
 )
 
 type ResponseInterfaces interface {
-	SecurityTxtParser.SecurityTxt | robotstxt.RobotsData
+	SecurityTxtParser.SecurityTxt | RobotsTxtParser.RobotsTxt
 }
 
 type ScanClient struct {
@@ -77,7 +77,7 @@ func (s *ScanClient) GetSecurityTxt() (SecurityTxtParser.SecurityTxt, error) {
 	return st, nil
 }
 
-func (s *ScanClient) GetRobotsTxt() (robotstxt.RobotsData, error) {
+func (s *ScanClient) GetRobotsTxt() (RobotsTxtParser.RobotsTxt, error) {
 	// Get the Robots.txt
 	resp, err := s.client.R().
 		Get("/robots.txt")
@@ -85,16 +85,26 @@ func (s *ScanClient) GetRobotsTxt() (robotstxt.RobotsData, error) {
 		return customOrDefaultError(
 			"no robots.txt found",
 			err,
-			robotstxt.RobotsData{},
+			RobotsTxtParser.RobotsTxt{},
 		)
 	}
 
-	// Parse .Txt
-	robots, err := robotstxt.FromResponse(resp.Response)
-	resp.Body.Close()
+	// Get Response Body
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return robotstxt.RobotsData{}, err
+		return RobotsTxtParser.RobotsTxt{}, err
 	}
 
-	return *robots, nil
+	// Parse .Txt
+	inputTxt := string(body)
+	rt, err := RobotsTxtParser.ParseTxt(inputTxt)
+	if err != nil || reflect.DeepEqual(rt, RobotsTxtParser.RobotsTxt{}) {
+		return customOrDefaultError(
+			"no robots.txt found",
+			err,
+			RobotsTxtParser.RobotsTxt{},
+		)
+	}
+
+	return rt, nil
 }

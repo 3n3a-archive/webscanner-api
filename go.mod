@@ -2,7 +2,11 @@ module github.com/3n3a/webscanner-api
 
 go 1.19
 
-require github.com/gin-gonic/gin v1.8.2
+require (
+	github.com/gin-gonic/gin v1.8.2
+	github.com/temoto/robotstxt v1.1.2
+	golang.org/x/exp v0.0.0-20230203172020-98cc5a0785f9
+)
 
 require (
 	github.com/cheekybits/genny v1.0.0 // indirect
@@ -17,14 +21,14 @@ require (
 	github.com/marten-seemann/qtls-go1-19 v0.1.1 // indirect
 	github.com/nxadm/tail v1.4.8 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
-	golang.org/x/exp v0.0.0-20230124195608-d38c7dcee874 // indirect
 	golang.org/x/mod v0.6.0 // indirect
 	golang.org/x/tools v0.2.0 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 )
 
 require (
-	github.com/3n3a/securitytxt-parser v0.0.0-20230125200835-c8e4cd5354a1
+	github.com/3n3a/robotstxt-parser v0.0.0-20230206182903-121e689d56f0
+	github.com/3n3a/securitytxt-parser v0.0.0-20230125202122-dc73f462c38f
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
@@ -37,7 +41,6 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
-	github.com/temoto/robotstxt v1.1.2
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	golang.org/x/crypto v0.1.0 // indirect
 	golang.org/x/net v0.4.0 // indirect

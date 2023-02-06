@@ -1,11 +1,11 @@
 package scanner
 
 import (
+	RobotsTxtParser "github.com/3n3a/robotstxt-parser"
 	SecurityTxtParser "github.com/3n3a/securitytxt-parser"
-	"github.com/temoto/robotstxt"
 )
 
 type ScanReport struct {
 	SecurityTxt SecurityTxtParser.SecurityTxt
-	RobotsTxt robotstxt.RobotsData
+	RobotsTxt RobotsTxtParser.RobotsTxt
 }
