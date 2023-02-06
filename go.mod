@@ -3,7 +3,7 @@ module github.com/3n3a/webscanner-api
 go 1.19
 
 require (
-	github.com/3n3a/robotstxt-parser v1.0.0
+	github.com/3n3a/robotstxt-parser v1.0.2
 	github.com/3n3a/securitytxt-parser v1.0.0
 	github.com/gin-gonic/gin v1.8.2
 	golang.org/x/exp v0.0.0-20230206171751-46f607a40771
