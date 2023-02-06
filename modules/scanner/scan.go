@@ -11,6 +11,10 @@ import (
 	"github.com/temoto/robotstxt"
 )
 
+type ResponseInterfaces interface {
+	SecurityTxtParser.SecurityTxt | robotstxt.RobotsData
+}
+
 type ScanClient struct {
 	baseUrl string
 
@@ -33,17 +37,24 @@ func (s *ScanClient) Create(userAgent string, serverUrl string) {
 		// EnableDumpEachRequest()
 }
 
+func customOrDefaultError[S ResponseInterfaces](message string, defaultError error, emptyStruct S) (S, error) {
+	if defaultError == nil {
+		return emptyStruct, errors.New(message)
+	} else {
+		return emptyStruct, defaultError
+	}
+}
+
 func (s *ScanClient) GetSecurityTxt() (SecurityTxtParser.SecurityTxt, error) {
 	// Get the Security.Txt
 	resp, err := s.client.R().
 		Get("/.well-known/security.txt")
 	if err != nil || resp.IsErrorState() {
-
-		if err == nil {
-			return SecurityTxtParser.SecurityTxt{}, errors.New("no security.txt found")
-		} else {
-			return SecurityTxtParser.SecurityTxt{}, err
-		}
+		return customOrDefaultError(
+			"no security.txt found",
+			err,
+			SecurityTxtParser.SecurityTxt{},
+		)
 	}
 
 	// Get Response Body
@@ -56,11 +67,11 @@ func (s *ScanClient) GetSecurityTxt() (SecurityTxtParser.SecurityTxt, error) {
 	inputTxt := string(body)
 	st, err := SecurityTxtParser.ParseTxt(inputTxt)
 	if err != nil || reflect.DeepEqual(st, SecurityTxtParser.SecurityTxt{}) {
-		if err == nil {
-			return SecurityTxtParser.SecurityTxt{}, errors.New("no security.txt found")
-		} else {
-			return SecurityTxtParser.SecurityTxt{}, err
-		}
+		return customOrDefaultError(
+			"no security.txt found",
+			err,
+			SecurityTxtParser.SecurityTxt{},
+		)
 	}
 
 	return st, nil
@@ -71,19 +82,18 @@ func (s *ScanClient) GetRobotsTxt() (robotstxt.RobotsData, error) {
 	resp, err := s.client.R().
 		Get("/robots.txt")
 	if err != nil || resp.IsErrorState() {
-
-		if err == nil {
-			return *&robotstxt.RobotsData{}, errors.New("no security.txt found")
-		} else {
-			return *&robotstxt.RobotsData{}, err
-		}
+		return customOrDefaultError(
+			"no robots.txt found",
+			err,
+			robotstxt.RobotsData{},
+		)
 	}
 
 	// Parse .Txt
 	robots, err := robotstxt.FromResponse(resp.Response)
 	resp.Body.Close()
 	if err != nil {
-		return *&robotstxt.RobotsData{}, err
+		return robotstxt.RobotsData{}, err
 	}
 
 	return *robots, nil
