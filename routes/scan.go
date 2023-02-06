@@ -29,18 +29,10 @@ func addScanRoutes(rg *gin.RouterGroup) {
 		scanClient.Create("WebScanner/1.0", baseUrl)
 
 		// security txt
-		st, err := scanClient.GetSecurityTxt()
-		if validate.IsErrorState(err) {
-			validate.JsonError(err, http.StatusBadRequest, c)
-			return
-		}
+		st, _ := scanClient.GetSecurityTxt()
 
 		// robots txt
-		rt, err := scanClient.GetRobotsTxt()
-		if validate.IsErrorState(err) {
-			validate.JsonError(err, http.StatusBadRequest, c)
-			return
-		}
+		rt, _ := scanClient.GetRobotsTxt()
 
 		sR := scanner.ScanReport{
 			SecurityTxt: st,
