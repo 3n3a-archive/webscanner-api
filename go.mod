@@ -4,7 +4,6 @@ go 1.19
 
 require (
 	github.com/gin-gonic/gin v1.8.2
-	github.com/temoto/robotstxt v1.1.2
 	golang.org/x/exp v0.0.0-20230203172020-98cc5a0785f9
 )
 
