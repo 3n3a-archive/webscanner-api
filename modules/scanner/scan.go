@@ -8,6 +8,7 @@ import (
 
 	"github.com/3n3a/securitytxt-parser"
 	"github.com/imroc/req/v3"
+	"github.com/temoto/robotstxt"
 )
 
 type ScanClient struct {
@@ -63,4 +64,27 @@ func (s *ScanClient) GetSecurityTxt() (SecurityTxtParser.SecurityTxt, error) {
 	}
 
 	return st, nil
+}
+
+func (s *ScanClient) GetRobotsTxt() (robotstxt.RobotsData, error) {
+	// Get the Robots.txt
+	resp, err := s.client.R().
+		Get("/robots.txt")
+	if err != nil || resp.IsErrorState() {
+
+		if err == nil {
+			return *&robotstxt.RobotsData{}, errors.New("no security.txt found")
+		} else {
+			return *&robotstxt.RobotsData{}, err
+		}
+	}
+
+	// Parse .Txt
+	robots, err := robotstxt.FromResponse(resp.Response)
+	resp.Body.Close()
+	if err != nil {
+		return *&robotstxt.RobotsData{}, err
+	}
+
+	return *robots, nil
 }
