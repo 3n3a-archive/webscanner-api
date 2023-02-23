@@ -8,4 +8,11 @@ import (
 type ScanReport struct {
 	SecurityTxt SecurityTxtParser.SecurityTxt
 	RobotsTxt RobotsTxtParser.RobotsTxt
+	HttpResponseInfo HttpResponseInfo
+}
+
+type HttpResponseInfo struct {
+	Headers map[string][]string
+	ResponseCode int
+	TextBody string
 }

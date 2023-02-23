@@ -34,9 +34,13 @@ func addScanRoutes(rg *gin.RouterGroup) {
 		// robots txt
 		rt, _ := scanClient.GetRobotsTxt()
 
+		// http response info
+		hi, _ := scanClient.GetHTTPReponseInfo()
+
 		sR := scanner.ScanReport{
 			SecurityTxt: st,
 			RobotsTxt: rt,
+			HttpResponseInfo: hi,
 		}
 
 		c.JSON(http.StatusOK, sR)

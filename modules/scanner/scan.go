@@ -6,13 +6,13 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/3n3a/securitytxt-parser"
 	"github.com/3n3a/robotstxt-parser"
+	"github.com/3n3a/securitytxt-parser"
 	"github.com/imroc/req/v3"
 )
 
 type ResponseInterfaces interface {
-	SecurityTxtParser.SecurityTxt | RobotsTxtParser.RobotsTxt
+	SecurityTxtParser.SecurityTxt | RobotsTxtParser.RobotsTxt | HttpResponseInfo
 }
 
 type ScanClient struct {
@@ -58,6 +58,7 @@ func (s *ScanClient) GetSecurityTxt() (SecurityTxtParser.SecurityTxt, error) {
 	}
 
 	// Get Response Body
+	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return SecurityTxtParser.SecurityTxt{}, err
@@ -90,6 +91,7 @@ func (s *ScanClient) GetRobotsTxt() (RobotsTxtParser.RobotsTxt, error) {
 	}
 
 	// Get Response Body
+	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return RobotsTxtParser.RobotsTxt{}, err
@@ -107,4 +109,33 @@ func (s *ScanClient) GetRobotsTxt() (RobotsTxtParser.RobotsTxt, error) {
 	}
 
 	return rt, nil
+}
+
+func (s *ScanClient) GetHTTPReponseInfo() (HttpResponseInfo, error) {
+	// Get the supllied baseUrl's Headers
+	resp, err := s.client.R().Get("")
+	if err != nil || resp.IsErrorState() {
+		return customOrDefaultError(
+			"url couldn't be accessed",
+			err,
+			HttpResponseInfo{},
+		)
+	}
+
+	copiedResCode := resp.StatusCode
+	copiedHeaders := resp.Header.Clone()
+	
+	// Get Response Body
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return HttpResponseInfo{}, err
+	}
+
+	// Get Response Headers
+	return HttpResponseInfo{
+		ResponseCode: copiedResCode,
+		Headers: copiedHeaders,
+		TextBody: string(body),
+	}, nil
 }
