@@ -28,6 +28,11 @@ func addScanRoutes(rg *gin.RouterGroup) {
 		scanClient := scanner.ScanClient{}
 		scanClient.Create("WebScanner/1.0", baseUrl)
 
+  //
+  // TODO: Use goroutines with error group,
+  // to exec all in parallel (see help file)
+  //
+
 		// security txt
 		st, _ := scanClient.GetSecurityTxt()
 
@@ -38,6 +43,8 @@ func addScanRoutes(rg *gin.RouterGroup) {
 		hi, _ := scanClient.GetHTTPReponseInfo()
 
 		sm, _ := scanClient.GetSiteMaps()
+
+  // END TODO
 
 		sR := scanner.ScanReport{
 			SecurityTxt: st,
