@@ -16,6 +16,8 @@ import (
 	"github.com/oxffaa/gopher-parse-sitemap"
 )
 
+// spearate into foles for esch scantype (sitemap, http)
+
 type ResponseInterfaces interface {
 	SecurityTxtParser.SecurityTxt | RobotsTxtParser.RobotsTxt | HttpResponseInfo | SitemapInfo | SitemapIndex | []SitemapIndex
 }
