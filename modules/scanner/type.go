@@ -9,7 +9,8 @@ type ScanReport struct {
 	SecurityTxt SecurityTxtParser.SecurityTxt
 	RobotsTxt RobotsTxtParser.RobotsTxt
 	HttpResponseInfo HttpResponseInfo
-	Sitemaps []SitemapIndex
+	SitemapIndexes []SitemapIndex
+	Errors []string
 }
 
 type HttpResponseInfo struct {

@@ -8,16 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func isErrorAddToList(err error, sR *scanner.ScanReport) {
+	if err != nil {
+		sR.Errors = append(sR.Errors, err.Error())
+	}
+}
+
 func addScanRoutes(rg *gin.RouterGroup) {
 	scan := rg.Group("/scan")
-
 	scan.GET("", func(c *gin.Context) {
-		// Returns a report
-		// Consists of:
-		/*
-			* securitytxt --> presence
-			* robotstxt --> presence
-		*/
 		baseUrl := c.Query("base_url")
 		err := validate.ValidateUrl(baseUrl)
 		if validate.IsErrorState(err) {
@@ -28,30 +27,30 @@ func addScanRoutes(rg *gin.RouterGroup) {
 		scanClient := scanner.ScanClient{}
 		scanClient.Create("WebScanner/1.0", baseUrl)
 
-  //
-  // TODO: Use goroutines with error group,
-  // to exec all in parallel (see help file)
-  //
+		sR := scanner.ScanReport{}
 
-		// security txt
-		st, _ := scanClient.GetSecurityTxt()
+		
+		st, err := scanClient.GetSecurityTxt()
+		sR.SecurityTxt = st
+		isErrorAddToList(err, &sR)
 
-		// robots txt
-		rt, _ := scanClient.GetRobotsTxt()
+	
+	
+		rt, err := scanClient.GetRobotsTxt()
+		sR.RobotsTxt = rt
+		isErrorAddToList(err, &sR)
 
-		// http response info
-		hi, _ := scanClient.GetHTTPReponseInfo()
 
-		sm, _ := scanClient.GetSiteMaps()
+		sm, err := scanClient.GetSiteMaps()
+		sR.SitemapIndexes = sm
+		isErrorAddToList(err, &sR)
 
-  // END TODO
 
-		sR := scanner.ScanReport{
-			SecurityTxt: st,
-			RobotsTxt: rt,
-			HttpResponseInfo: hi,
-			Sitemaps: sm,
-		}
+	
+		hi, err := scanClient.GetHTTPReponseInfo()
+		sR.HttpResponseInfo = hi
+		isErrorAddToList(err, &sR)
+
 
 		c.JSON(http.StatusOK, sR)
 	})
