@@ -82,7 +82,7 @@ func (s *ScanClient) getSitemapIndex(bodyBuffer io.Reader) SitemapIndex {
 
 	}
 
-	if err := g.Wait(); err == nil {
+	if err := g.Wait(); err != nil {
 		fmt.Println("An error occurred while fetching sitemaps")
 	}
 	return currentIndex
@@ -152,7 +152,7 @@ func (s *ScanClient) GetSiteMaps() ([]SitemapIndex, error) {
 	}
 
 
-	if err := g.Wait(); err == nil {
+	if err := g.Wait(); err != nil {
 		fmt.Println("Error")
 	}
 

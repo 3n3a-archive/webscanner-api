@@ -1,11 +1,13 @@
 package routes
 
 import (
+	"fmt"
 	"net/http"
 
 	scanner "github.com/3n3a/webscanner-api/modules/scanner"
 	validate "github.com/3n3a/webscanner-api/modules/validation"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/sync/errgroup"
 )
 
 func isErrorAddToList(err error, sR *scanner.ScanReport) {
@@ -17,6 +19,8 @@ func isErrorAddToList(err error, sR *scanner.ScanReport) {
 func addScanRoutes(rg *gin.RouterGroup) {
 	scan := rg.Group("/scan")
 	scan.GET("", func(c *gin.Context) {
+		g := new(errgroup.Group)
+
 		baseUrl := c.Query("base_url")
 		err := validate.ValidateUrl(baseUrl)
 		if validate.IsErrorState(err) {
@@ -29,28 +33,36 @@ func addScanRoutes(rg *gin.RouterGroup) {
 
 		sR := scanner.ScanReport{}
 
-		
-		st, err := scanClient.GetSecurityTxt()
-		sR.SecurityTxt = st
-		isErrorAddToList(err, &sR)
+		g.Go(func() error {
+			st, err := scanClient.GetSecurityTxt()
+			sR.SecurityTxt = st
+			isErrorAddToList(err, &sR)
+
+			return nil
+		})
 
 	
-	
-		rt, err := scanClient.GetRobotsTxt()
-		sR.RobotsTxt = rt
-		isErrorAddToList(err, &sR)
+		g.Go(func() error {
+			rt, err := scanClient.GetRobotsTxt()
+			sR.RobotsTxt = rt
+			isErrorAddToList(err, &sR)
 
+			sm, err := scanClient.GetSiteMaps()
+			sR.SitemapIndexes = sm
+			isErrorAddToList(err, &sR)
+			return nil
+		})
 
-		sm, err := scanClient.GetSiteMaps()
-		sR.SitemapIndexes = sm
-		isErrorAddToList(err, &sR)
+		g.Go(func() error {
+			hi, err := scanClient.GetHTTPReponseInfo()
+			sR.HttpResponseInfo = hi
+			isErrorAddToList(err, &sR)
+			return nil
+		})
 
-
-	
-		hi, err := scanClient.GetHTTPReponseInfo()
-		sR.HttpResponseInfo = hi
-		isErrorAddToList(err, &sR)
-
+		if err := g.Wait(); err != nil {
+			fmt.Println("Error while processing scan report")
+		}
 
 		c.JSON(http.StatusOK, sR)
 	})
