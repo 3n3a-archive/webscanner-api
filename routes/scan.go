@@ -66,43 +66,4 @@ func addScanRoutes(rg *gin.RouterGroup) {
 
 		c.JSON(http.StatusOK, sR)
 	})
-
-	
-	scan.GET("/securitytxt", func(c *gin.Context) {
-		baseUrl := c.Query("base_url")
-		err := validate.ValidateUrl(baseUrl)
-		if validate.IsErrorState(err) {
-			validate.JsonError(err, http.StatusNotAcceptable, c)
-			return
-		}
-
-		scanClient := scanner.ScanClient{}
-		scanClient.Create("WebScanner/1.0", baseUrl)
-		st, err := scanClient.GetSecurityTxt()
-
-		if validate.IsErrorState(err) {
-			validate.JsonError(err, http.StatusBadRequest, c)
-			return
-		}
-		c.JSON(http.StatusOK, st)
-	})
-
-	scan.GET("/robotstxt", func(c *gin.Context) {
-		baseUrl := c.Query("base_url")
-		err := validate.ValidateUrl(baseUrl)
-		if validate.IsErrorState(err) {
-			validate.JsonError(err, http.StatusNotAcceptable, c)
-			return
-		}
-
-		scanClient := scanner.ScanClient{}
-		scanClient.Create("WebScanner/1.0", baseUrl)
-		st, err := scanClient.GetRobotsTxt()
-
-		if validate.IsErrorState(err) {
-			validate.JsonError(err, http.StatusBadRequest, c)
-			return
-		}
-		c.JSON(http.StatusOK, st)
-	})
 }
