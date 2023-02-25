@@ -16,16 +16,18 @@ const (
 	MAX_SITEMAPS_INDEX = 10
 )
 
-func (s *ScanClient) isSitemapIndex(body io.Reader) bool {
-	bodyStart := make([]byte, 256)
-	_, err := body.Read(bodyStart)
-	if err != nil {
-		return false
-	}
+func (s *ScanClient) isTextThatStartsWith(body *[]byte, startText string) bool {
+	bodyStartString := string(*body)
+	return strings.Contains(bodyStartString, startText)
 
-	bodyStartString := string(bodyStart)
-	return strings.Contains(bodyStartString, "<sitemapindex")
+}
 
+func (s *ScanClient) isSitemapIndex(body *[]byte) bool {
+	return s.isTextThatStartsWith(body, "<sitemapindex")
+}
+
+func (s *ScanClient) isSitemap(body *[]byte) bool {
+	return s.isTextThatStartsWith(body, "<urlset")
 }
 
 func (s *ScanClient) getSitemapUrlsByUrl(url string) []string {
@@ -69,7 +71,12 @@ func (s *ScanClient) getSitemapIndex(bodyBuffer io.Reader) SitemapIndex {
 	}
 
 	g := new(errgroup.Group)
-	for _, url := range sitemapsUrls[:MAX_SITEMAPS_INDEX] {
+
+	maxSitemapsCount := MAX_SITEMAPS_INDEX
+	if cap(sitemapsUrls) <= MAX_SITEMAPS_INDEX {
+		maxSitemapsCount = cap(sitemapsUrls)
+	}
+	for _, url := range sitemapsUrls[:maxSitemapsCount] {
 
 		url := url
 		g.Go(func() error {
@@ -133,11 +140,10 @@ func (s *ScanClient) GetSiteMaps() ([]SitemapIndex, error) {
 			}
 			
 			bodyBuffer := bytes.NewBuffer(body)
-			bodyBuffer2 := bytes.NewBuffer(body)
 		
-			if s.isSitemapIndex(bodyBuffer2) {
+			if s.isSitemapIndex(&body) {
 				sitemapIndexes = append(sitemapIndexes, s.getSitemapIndex(bodyBuffer))
-			} else {
+			} else if s.isSitemap(&body) {
 				// todo: maybe eventually check if is acuallty a sitemap
 				sitemaps := make([]SitemapInfo, 0)
 				sitemaps = append(sitemaps, s.getSitemap(bodyBuffer, sitemapUrl), )
