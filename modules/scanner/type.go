@@ -5,11 +5,16 @@ import (
 	SecurityTxtParser "github.com/3n3a/securitytxt-parser"
 )
 
+type ResponseInterfaces interface {
+	SecurityTxtParser.SecurityTxt | RobotsTxtParser.RobotsTxt | HttpResponseInfo | SitemapInfo | SitemapIndex | []SitemapIndex | TechnologiesInfo
+}
+
 type ScanReport struct {
 	SecurityTxt SecurityTxtParser.SecurityTxt
 	RobotsTxt RobotsTxtParser.RobotsTxt
 	HttpResponseInfo HttpResponseInfo
 	SitemapIndexes []SitemapIndex
+	Technologies TechnologiesInfo
 	Errors []string
 }
 
@@ -26,4 +31,14 @@ type SitemapInfo struct {
 
 type SitemapIndex struct {
 	Sitemaps []SitemapInfo
+}
+
+type TechnologiesInfo struct {
+	Detected []Technology
+}
+
+type Technology struct {
+	Name string
+	Version string
+	Score int
 }

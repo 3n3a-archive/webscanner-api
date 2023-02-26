@@ -60,6 +60,18 @@ func addScanRoutes(rg *gin.RouterGroup) {
 			return nil
 		})
 
+
+		g.Go(func() error {
+			tech, err := scanClient.DetectTechnologies()
+			sR.Technologies = tech
+			isErrorAddToList(err, &sR)
+			return nil
+		})
+
+		// NEW STUFF
+
+		// END NEW
+
 		if err := g.Wait(); err != nil {
 			fmt.Println("Error while processing scan report")
 		}

@@ -4,14 +4,8 @@ import (
 	"errors"
 	"time"
 
-	RobotsTxtParser "github.com/3n3a/robotstxt-parser"
-	SecurityTxtParser "github.com/3n3a/securitytxt-parser"
 	"github.com/imroc/req/v3"
 )
-
-type ResponseInterfaces interface {
-	SecurityTxtParser.SecurityTxt | RobotsTxtParser.RobotsTxt | HttpResponseInfo | SitemapInfo | SitemapIndex | []SitemapIndex
-}
 
 type ScanClient struct {
 	baseUrl string
