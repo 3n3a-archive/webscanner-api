@@ -38,6 +38,7 @@ type TechnologiesInfo struct {
 }
 
 type Technology struct {
+	DetectionString string `json:"-"`
 	Name string
 	Version string
 	Score int

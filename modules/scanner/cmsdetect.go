@@ -8,31 +8,57 @@ import (
 	"github.com/antchfx/htmlquery"
 )
 
+const (
+	VERSION_REGEX = `(?m)([0-9.]{3,})([ \n"';,\-\t]{0,1})`
+)
+
 func (s *ScanClient) getVersionFromString(input string) string {
-	// TODO: parse versions like '6.2-beta3-55420'
-	regex := regexp.MustCompile(`(?m)([0-9.]{5,})`)
-	return regex.FindString(input)
+	// TODO: parse versions like '6.2-beta3-55420' --> kinda does
+	regex := regexp.MustCompile(VERSION_REGEX)
+	if matches := regex.FindStringSubmatch(input); cap(matches) > 0 {
+		return matches[1]
+	}
+	return ""
 }
 
 func (s *ScanClient) DetectTechnologies() (TechnologiesInfo, error) {
+	// TODO: look at headers (x-powered-by, server, )
+
+	// right now this array of techs is only designed for generator tag
 	detectedTechnologies := []Technology {
 		{
+			DetectionString: "wordpress",
 			Name: "WordPress",
 			Version: "",
 			Score: 0,
 		},
 		{
+			DetectionString: "woocommerce",
 			Name: "WooCommerce",
 			Version: "",
 			Score: 0,
 		},
 		{
+			DetectionString: "wpml",
 			Name: "WPML",
 			Version: "",
 			Score: 0,
 		},
 		{
+			DetectionString: "elementor",
 			Name: "Elementor",
+			Version: "",
+			Score: 0,
+		},
+		{
+			DetectionString: "powered by wpbakery page builder",
+			Name: "WPBakery Page Builder",
+			Version: "",
+			Score: 0,
+		},
+		{
+			DetectionString: "all in one seo",
+			Name: "All in One SEO (AIOSEO)",
 			Version: "",
 			Score: 0,
 		},
@@ -73,8 +99,7 @@ func (s *ScanClient) DetectTechnologies() (TechnologiesInfo, error) {
 	for _, nameString := range foundGeneratorNames {
 		for index, tech := range detectedTechnologies {
 			nameLower := strings.ToLower(nameString)
-			techLower := strings.ToLower(tech.Name)
-			if strings.Contains(nameLower, techLower) {
+			if strings.HasPrefix(nameLower, tech.DetectionString) {
 				detectedTechnologies[index].Score += 1
 				detectedTechnologies[index].Version = s.getVersionFromString(nameString)
 			}
