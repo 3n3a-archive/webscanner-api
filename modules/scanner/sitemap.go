@@ -2,10 +2,12 @@ package scanner
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"strings"
+	"syscall"
 
 	"github.com/imroc/req/v3"
 	sitemap "github.com/oxffaa/gopher-parse-sitemap"
@@ -97,8 +99,8 @@ func (s *ScanClient) getSitemapIndex(bodyBuffer io.Reader) SitemapIndex {
 
 func (s *ScanClient) sitemapExists(sitemapUrl string) bool {
 	resp, err := req.C().R().Get(sitemapUrl)
-	if err != nil || resp.IsErrorState() {
-		fmt.Println("Sitemap Exists", err, resp.IsErrorState())
+	if err != nil || errors.Is(err, syscall.ECONNREFUSED) {
+		fmt.Printf("Sitemap Does Not Exist: %s", err.Error())
 		fmt.Println(sitemapUrl, resp.StatusCode)
 		return false
 	}
