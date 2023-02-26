@@ -1,13 +1,25 @@
 package routes
 
 import (
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
+	logrus "github.com/sirupsen/logrus"
 )
 
-var router = gin.Default()
+var customLogWriter = logrus.New()
+
+var router = gin.New()	
 
 // Run will start the server
 func Run() {
+	// Middleware
+	customLogWriter.Formatter = &logrus.JSONFormatter{}
+
+	router.Use(gin.Recovery())
+	router.Use(gzip.Gzip(gzip.BestCompression))
+	router.Use(gin.LoggerWithWriter(customLogWriter.Writer()))
+
+	// Routes
 	getRoutes()
 	router.Run(":5000")
 }
