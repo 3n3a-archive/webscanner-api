@@ -1,6 +1,7 @@
 package scanner
 
 import (
+	"log"
 	"regexp"
 	"strings"
 
@@ -9,7 +10,7 @@ import (
 )
 
 const (
-	VERSION_REGEX = `(?m)([0-9.]{3,})([ \n"';,\-\t]{0,1})`
+	VERSION_REGEX = `(?m)([0-9.]{3,}|[0-9])([ \n"';,\-\t]{0,1})`
 )
 
 func (s *ScanClient) getVersionFromString(input string) string {
@@ -62,6 +63,58 @@ func (s *ScanClient) DetectTechnologies() (TechnologiesInfo, error) {
 			Version: "",
 			Score: 0,
 		},
+		{
+			DetectionString: "typo3 cms",
+			Name: "Typo3 CMS",
+			Version: "",
+			Score: 0,
+		},
+		{
+			DetectionString: "drupal",
+			Name: "Drupal",
+			Version: "9",
+			Score: 0,
+		},
+		{
+			DetectionString: "webflow",
+			Name: "Webflow",
+			Version: "",
+			Score: 0,
+		},
+		{
+			DetectionString: "gatsby",
+			Name: "Gatsby",
+			Version: "",
+			Score: 0,
+		},
+		{
+			DetectionString: "astro",
+			Name: "Astro",
+			Version: "",
+			Score: 0,
+		},
+		{
+			DetectionString: "plone",
+			Name: "Plone",
+			Version: "",
+			Score: 0,
+		},
+		{
+			DetectionString: "hugo",
+			Name: "Hugo",
+			Version: "",
+			Score: 0,
+		},
+		{
+			DetectionString: "imperia",
+			Name: "Pirobase Imperia CMS",
+			Version: "",
+			Score: 0,
+		},
+		{
+			DetectionString: "mura",
+			Name: "Mura CMS",
+		},
 	}
 
 
@@ -87,11 +140,14 @@ func (s *ScanClient) DetectTechnologies() (TechnologiesInfo, error) {
 
 	// Find Generator Meta Tags
 	foundGeneratorNames := make([]string, 0)
-	metaTagsWithName := htmlquery.Find(doc, "//meta[@name='generator']")
+	metaTagsWithName := htmlquery.Find(doc, "//meta[@name]")
 	for _, tag := range metaTagsWithName {
-		// name := htmlquery.SelectAttr(tag, "name")
-		content := htmlquery.SelectAttr(tag, "content")
-		foundGeneratorNames = append(foundGeneratorNames, content)
+		name := strings.ToLower(htmlquery.SelectAttr(tag, "name"))
+
+		if name == "generator" {
+			content := htmlquery.SelectAttr(tag, "content")
+			foundGeneratorNames = append(foundGeneratorNames, content)
+		}
 	}
 
 
@@ -100,6 +156,7 @@ func (s *ScanClient) DetectTechnologies() (TechnologiesInfo, error) {
 		for index, tech := range detectedTechnologies {
 			nameLower := strings.ToLower(nameString)
 			if strings.HasPrefix(nameLower, tech.DetectionString) {
+				log.Println("Generator Tag Found", nameLower)
 				detectedTechnologies[index].Score += 1
 				detectedTechnologies[index].Version = s.getVersionFromString(nameString)
 			}
