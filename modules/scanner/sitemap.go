@@ -98,10 +98,9 @@ func (s *ScanClient) getSitemapIndex(bodyBuffer io.Reader) SitemapIndex {
 }
 
 func (s *ScanClient) sitemapExists(sitemapUrl string) bool {
-	resp, err := req.C().R().Get(sitemapUrl)
+	_, err := req.C().R().Get(sitemapUrl)
 	if err != nil || errors.Is(err, syscall.ECONNREFUSED) {
 		fmt.Printf("Sitemap Does Not Exist: %s", err.Error())
-		fmt.Println(sitemapUrl, resp.StatusCode)
 		return false
 	}
 
