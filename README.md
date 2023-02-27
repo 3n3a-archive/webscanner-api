@@ -2,6 +2,11 @@
 
 This API will Scan a given hostname for server names
 
+## Features
+
+- [ ] Switch to labstack/echo/v5 instead of Gin
+- [ ] Add scanning for other features than generator meta (Headers, Files, Sitemap Urla, Robots.Txt Url/)
+
 ## Dev
 
 ### Coroutines
