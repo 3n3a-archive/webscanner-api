@@ -21,7 +21,7 @@ type ScanReport struct {
 type HttpResponseInfo struct {
 	Headers map[string][]string
 	ResponseCode int
-	TextBody string
+	TextBody string `json:"-"`
 }
 
 type SitemapInfo struct {
