@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"strings"
 	"syscall"
 
@@ -84,7 +83,7 @@ func (s *ScanClient) getSitemapIndex(bodyBuffer io.Reader) SitemapIndex {
 		g.Go(func() error {
 			currentIndex.Sitemaps = append(currentIndex.Sitemaps, SitemapInfo{
 				LocationUrl: url,
-				Urls: s.getSitemapUrlsByUrl(url),
+				Urls:        s.getSitemapUrlsByUrl(url),
 			})
 			return nil
 		})
@@ -107,7 +106,7 @@ func (s *ScanClient) sitemapExists(sitemapUrl string) bool {
 
 	return true
 }
- 
+
 func (s *ScanClient) GetSiteMaps() ([]SitemapIndex, error) {
 	g := new(errgroup.Group)
 
@@ -132,23 +131,23 @@ func (s *ScanClient) GetSiteMaps() ([]SitemapIndex, error) {
 			if err != nil || resp.IsErrorState() {
 				return err
 			}
-				
+
 			// Read Body into Memory
 			// This might be dangerous
 			defer resp.Body.Close()
-			body, err := ioutil.ReadAll(resp.Body)
+			body, err := io.ReadAll(resp.Body)
 			if err != nil {
 				return err
 			}
-			
+
 			bodyBuffer := bytes.NewBuffer(body)
-		
+
 			if s.isSitemapIndex(&body) {
 				sitemapIndexes = append(sitemapIndexes, s.getSitemapIndex(bodyBuffer))
 			} else if s.isSitemap(&body) {
 				// todo: maybe eventually check if is acuallty a sitemap
 				sitemaps := make([]SitemapInfo, 0)
-				sitemaps = append(sitemaps, s.getSitemap(bodyBuffer, sitemapUrl), )
+				sitemaps = append(sitemaps, s.getSitemap(bodyBuffer, sitemapUrl))
 				sitemapIndexes = append(sitemapIndexes, SitemapIndex{
 					Sitemaps: sitemaps,
 				})
@@ -158,7 +157,6 @@ func (s *ScanClient) GetSiteMaps() ([]SitemapIndex, error) {
 		})
 
 	}
-
 
 	if err := g.Wait(); err != nil {
 		fmt.Println("Error")

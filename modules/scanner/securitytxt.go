@@ -1,7 +1,7 @@
 package scanner
 
 import (
-	"io/ioutil"
+	"io"
 	"reflect"
 
 	SecurityTxtParser "github.com/3n3a/securitytxt-parser"
@@ -21,7 +21,7 @@ func (s *ScanClient) GetSecurityTxt() (SecurityTxtParser.SecurityTxt, error) {
 
 	// Get Response Body
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return SecurityTxtParser.SecurityTxt{}, err
 	}

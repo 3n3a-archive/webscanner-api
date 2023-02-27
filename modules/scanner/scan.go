@@ -24,7 +24,6 @@ func (s *ScanClient) Create(userAgent string, serverUrl string) {
 		SetCommonRetryBackoffInterval(1*time.Millisecond, 100*time.Millisecond).
 		SetCommonRetryFixedInterval(10*time.Millisecond).
 		SetTimeout(5*time.Second).
-		SetCommonHeader("Accept", "application/json").
 		SetUserAgent(userAgent)
 
 	// DevMode().

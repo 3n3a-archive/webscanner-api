@@ -1,7 +1,7 @@
 package scanner
 
 import (
-	"io/ioutil"
+	"io"
 	"reflect"
 
 	RobotsTxtParser "github.com/3n3a/robotstxt-parser"
@@ -21,7 +21,7 @@ func (s *ScanClient) GetRobotsTxt() (RobotsTxtParser.RobotsTxt, error) {
 
 	// Get Response Body
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return RobotsTxtParser.RobotsTxt{}, err
 	}
