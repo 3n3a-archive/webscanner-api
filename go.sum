@@ -9,8 +9,12 @@ dmitri.shuralyov.com/state v0.0.0-20180228185332-28bcc343414c/go.mod h1:0PRwlb0D
 git.apache.org/thrift.git v0.0.0-20180902110319-2566ecd5d999/go.mod h1:fPE2ZNJGynbRyZ4dJvy6G277gSllfV2HJqblrnkyeyg=
 github.com/3n3a/robotstxt-parser v1.0.3 h1:nUkMxXR1FH4HG6RUYfy2/DBCzQ7guXqxYt4gNPViMew=
 github.com/3n3a/robotstxt-parser v1.0.3/go.mod h1:FrXz6DawtcPC7VdgpQ9qK2dtp3R9wf8qzOeVHWC0csA=
+github.com/3n3a/robotstxt-parser v1.0.4 h1:qNkXmKYGhU7OrNdjP/A/wvN3NlLdkQs4eKwzvhOlwYE=
+github.com/3n3a/robotstxt-parser v1.0.4/go.mod h1:FrXz6DawtcPC7VdgpQ9qK2dtp3R9wf8qzOeVHWC0csA=
 github.com/3n3a/securitytxt-parser v1.0.0 h1:hB9rgdHeHCAOf7IgyXRqqauFIbtJcUArKQ/N6AatGOI=
 github.com/3n3a/securitytxt-parser v1.0.0/go.mod h1:CD1bxFp3HxZ3WX6OYVOBfTEAf7tjGRgkmebFBvus2Kg=
+github.com/3n3a/securitytxt-parser v1.0.1 h1:59rp+mt+l7OlZhKwUZCaNSuFVvbknucvOwdiCsqFWkY=
+github.com/3n3a/securitytxt-parser v1.0.1/go.mod h1:CD1bxFp3HxZ3WX6OYVOBfTEAf7tjGRgkmebFBvus2Kg=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/anmitsu/go-shlex v0.0.0-20161002113705-648efa622239/go.mod h1:2FmKhYUyUczH0OGQWaF5ceTx0UBShxjsH6f8oGKYe2c=
 github.com/antchfx/htmlquery v1.3.0 h1:5I5yNFOVI+egyia5F2s/5Do2nFWxJz41Tr3DyfKD25E=

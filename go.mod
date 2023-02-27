@@ -3,8 +3,8 @@ module github.com/3n3a/webscanner-api
 go 1.19
 
 require (
-	github.com/3n3a/robotstxt-parser v1.0.3
-	github.com/3n3a/securitytxt-parser v1.0.0
+	github.com/3n3a/robotstxt-parser v1.0.4
+	github.com/3n3a/securitytxt-parser v1.0.1
 	github.com/antchfx/htmlquery v1.3.0
 	github.com/gin-contrib/gzip v0.0.6
 	github.com/gin-gonic/gin v1.8.2
