@@ -5,17 +5,20 @@ import (
 	"time"
 
 	"github.com/imroc/req/v3"
+	"github.com/sirupsen/logrus"
 )
 
 type ScanClient struct {
 	baseUrl string
+	logger *logrus.Logger
 
 	client *req.Client
 
 	sitemapUrls []string
 }
 
-func (s *ScanClient) Create(userAgent string, serverUrl string) {
+func (s *ScanClient) Create(userAgent string, serverUrl string, logger *logrus.Logger) {
+	s.logger = logger
 	s.baseUrl = serverUrl
 
 	s.client = req.C().
@@ -29,6 +32,7 @@ func (s *ScanClient) Create(userAgent string, serverUrl string) {
 	// DevMode().
 	// EnableDumpEachRequest()
 }
+
 
 func CustomOrDefaultError[S ResponseInterfaces](message string, defaultError error, emptyStruct S) (S, error) {
 	if defaultError == nil {

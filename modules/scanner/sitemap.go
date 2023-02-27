@@ -7,6 +7,7 @@ import (
 	"io"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/imroc/req/v3"
 	sitemap "github.com/oxffaa/gopher-parse-sitemap"
@@ -127,7 +128,10 @@ func (s *ScanClient) GetSiteMaps() ([]SitemapIndex, error) {
 
 		sitemapUrl := sitemapUrl
 		g.Go(func() error {
-			resp, err := req.C().R().Get(sitemapUrl)
+			resp, err := req.C().
+				SetTimeout(5*time.Second).
+				R().
+				Get(sitemapUrl)
 			if err != nil || resp.IsErrorState() {
 				return err
 			}
