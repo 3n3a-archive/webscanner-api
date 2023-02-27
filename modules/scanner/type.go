@@ -10,9 +10,9 @@ type ResponseInterfaces interface {
 }
 
 type ScanReport struct {
-	SecurityTxt SecurityTxtParser.SecurityTxt		`json:"securitytxt"`
-	RobotsTxt RobotsTxtParser.RobotsTxt				`json:"robotstxt"`
-	HttpResponseInfo HttpResponseInfo				`json:"httpresponseinfo"`
+	SecurityTxt SecurityTxtParser.SecurityTxt		`json:"security-txt"`
+	RobotsTxt RobotsTxtParser.RobotsTxt				`json:"robots-txt"`
+	HttpResponseInfo HttpResponseInfo				`json:"http-response-info"`
 	SitemapIndexes []SitemapIndex					`json:"sitemapindexes"`
 	Technologies TechnologiesInfo					`json:"technologies"`
 	Errors []string 								`json:"errors"`
@@ -20,12 +20,12 @@ type ScanReport struct {
 
 type HttpResponseInfo struct {
 	Headers map[string][]string		`json:"headers"`
-	ResponseCode int				`json:"responsecode"`
+	ResponseCode int				`json:"response-code"`
 	TextBody string 				`json:"-"`
 }
 
 type SitemapInfo struct {
-	LocationUrl string				`json:"locationurl"`
+	LocationUrl string				`json:"location-url"`
 	Urls []string					`json:"urls"`
 }
 
