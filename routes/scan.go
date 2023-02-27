@@ -16,6 +16,7 @@ func isErrorAddToList(err error, sR *scanner.ScanReport) {
 	}
 }
 
+// TODO: check that only base-url was provided (e.g. host) or else parse from given url
 func addScanRoutes(rg *gin.RouterGroup) {
 	scan := rg.Group("/scan")
 	scan.GET("", func(c *gin.Context) {

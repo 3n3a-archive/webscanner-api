@@ -6,6 +6,7 @@ This API will Scan a given hostname for server names
 
 - [ ] Switch to labstack/echo/v5 instead of Gin
 - [ ] Add scanning for other features than generator meta (Headers, Files, Sitemap Urla, Robots.Txt Url/)
+- [ ] Look at url being submitted and extract base url + schema (https:// + example.com)
 
 ## Dev
 
