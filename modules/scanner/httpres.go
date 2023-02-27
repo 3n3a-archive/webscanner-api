@@ -33,10 +33,18 @@ func (s *ScanClient) GetHTTPReponseInfo() (HttpResponseInfo, error) {
 		transformedHeaders[nameLower] = values
 	}
 
+
+	ipinfo, err := s.GetIPInfo(s.remoteAddr)
+	if err != nil {
+		ipinfo = IPInfo{}
+	}
+
 	// Get Response Headers
 	return HttpResponseInfo{
 		ResponseCode: copiedResCode,
 		Headers:      transformedHeaders,
 		TextBody:     string(body),
+		RemoteAddress: s.remoteAddr.String(),
+		RemoteIPInfo: ipinfo,
 	}, nil
 }

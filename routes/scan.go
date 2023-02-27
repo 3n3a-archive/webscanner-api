@@ -2,7 +2,6 @@ package routes
 
 import (
 	"fmt"
-	"net"
 	"net/http"
 	"net/url"
 	"time"
@@ -20,15 +19,7 @@ func isErrorAddToList(err error, sR *scanner.ScanReport) {
 	}
 }
 
-func hostExists(url *url.URL) bool {
-	address := url.Host + ":80"
-	_, err := net.DialTimeout("tcp", address, 5*time.Second)
 
-// 	fmt.Printf("Connection established between %s and localhost with time out of %d seconds.\n", address, 5)
-//    fmt.Printf("Remote Address : %s \n", conn.RemoteAddr().String())
-//    fmt.Printf("Local Address : %s \n", conn.LocalAddr().String())
-	return err == nil
-} 
 
 // TODO: check that only base-url was provided (e.g. host) or else parse from given url
 func addScanRoutes(rg *gin.RouterGroup, customLogWriter *logrus.Logger) {
@@ -44,8 +35,11 @@ func addScanRoutes(rg *gin.RouterGroup, customLogWriter *logrus.Logger) {
 		}
 
 		url, _ := url.Parse(baseUrl)
+		cleanedBaseUrl := fmt.Sprintf("%s://%s", url.Scheme, url.Hostname())
+		scanClient := scanner.ScanClient{}
+		scanClient.Create("WebScanner/1.0", cleanedBaseUrl, customLogWriter)
 
-		if !hostExists(url) {
+		if !scanClient.HostExists(url) {
 			c.JSON(http.StatusOK, scanner.ScanReport{
 				Errors: []string{
 					"Host does not exist",
@@ -54,8 +48,6 @@ func addScanRoutes(rg *gin.RouterGroup, customLogWriter *logrus.Logger) {
 			return
 		}
 
-		scanClient := scanner.ScanClient{}
-		scanClient.Create("WebScanner/1.0", baseUrl, customLogWriter)
 
 		sR := scanner.ScanReport{}
 

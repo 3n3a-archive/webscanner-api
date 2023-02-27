@@ -1,7 +1,6 @@
 package scanner
 
 import (
-	"log"
 	"regexp"
 	"strings"
 
@@ -156,7 +155,6 @@ func (s *ScanClient) DetectTechnologies() (TechnologiesInfo, error) {
 		for index, tech := range detectedTechnologies {
 			nameLower := strings.ToLower(nameString)
 			if strings.HasPrefix(nameLower, tech.DetectionString) {
-				log.Println("Generator Tag Found", nameLower)
 				detectedTechnologies[index].Score += 1
 				detectedTechnologies[index].Version = s.getVersionFromString(nameString)
 			}

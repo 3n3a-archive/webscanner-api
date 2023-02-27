@@ -22,6 +22,8 @@ type HttpResponseInfo struct {
 	Headers map[string][]string		`json:"headers"`
 	ResponseCode int				`json:"response-code"`
 	TextBody string 				`json:"-"`
+	RemoteAddress string			`json:"remote-address"`
+	RemoteIPInfo IPInfo				`json:"remote-ip-info"`
 }
 
 type SitemapInfo struct {
@@ -42,4 +44,10 @@ type Technology struct {
 	Name string						`json:"name"`
 	Version string					`json:"version"`
 	Score int						`json:"score"`
+}
+
+type IPInfo struct {
+	City string				`json:"city"`
+	Country string			`json:"country"`
+	ASN string				`json:"asn"`
 }
