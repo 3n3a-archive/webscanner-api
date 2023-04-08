@@ -10,7 +10,7 @@ import (
 func addPingRoutes(rg *gin.RouterGroup, logger *logrus.Logger) {
 	ping := rg.Group("/ping")
 
-	ping.GET("/", func(c *gin.Context) {
+	ping.GET("", func(c *gin.Context) {
 		c.JSON(http.StatusOK, "pong")
 	})
 }

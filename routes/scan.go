@@ -20,14 +20,25 @@ func isErrorAddToList(err error, sR *scanner.ScanReport) {
 }
 
 
+type ScanRequestBody struct {
+	BaseUrl string `json:"base_url"`
+}
+
 
 // TODO: check that only base-url was provided (e.g. host) or else parse from given url
 func addScanRoutes(rg *gin.RouterGroup, customLogWriter *logrus.Logger) {
 	scan := rg.Group("/scan")
-	scan.GET("", func(c *gin.Context) {
+	scan.POST("", func(c *gin.Context) {
 		g := new(errgroup.Group)
 
-		baseUrl := c.Query("base_url")
+		var reqBody ScanRequestBody
+		if err := c.BindJSON(&reqBody); validate.IsErrorState(err) {
+			validate.JsonError(err, http.StatusNotAcceptable, c)
+			return
+		}
+		
+		baseUrl := reqBody.BaseUrl;
+
 		err := validate.ValidateUrl(baseUrl)
 		if validate.IsErrorState(err) {
 			validate.JsonError(err, http.StatusNotAcceptable, c)
