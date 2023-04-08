@@ -40,8 +40,8 @@ type TechnologiesInfo struct {
 }
 
 type Technology struct {
-	DetectionString string 			`json:"-"`
-	Name string						`json:"name"`
+	DetectionString string 			`json:"-" yaml:"detection_string"`
+	Name string						`json:"name" yaml:"name"`
 	Version string					`json:"version"`
 	Score int						`json:"score"`
 }

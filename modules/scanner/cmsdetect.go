@@ -4,13 +4,19 @@ import (
 	"regexp"
 	"strings"
 
+	validate "github.com/3n3a/webscanner-api/modules/validation"
+	file "github.com/3n3a/webscanner-api/modules/file"
+
 	// "github.com/PuerkitoBio/goquery"
 	"github.com/antchfx/htmlquery"
 )
 
 const (
 	VERSION_REGEX = `(?m)([0-9.]{3,}|[0-9])([ \n"';,\-\t]{0,1})`
+	GENERATOR_TECHNOLOGIES_YAML_FILE = "./config/generator-tag-technologies.yaml"
 )
+
+
 
 func (s *ScanClient) getVersionFromString(input string) string {
 	// TODO: parse versions like '6.2-beta3-55420' --> kinda does
@@ -21,109 +27,25 @@ func (s *ScanClient) getVersionFromString(input string) string {
 	return ""
 }
 
-func (s *ScanClient) DetectTechnologies() (TechnologiesInfo, error) {
-	// TODO: look at headers (x-powered-by, server, )
-
-	// right now this array of techs is only designed for generator tag
-	detectedTechnologies := []Technology {
-		{
-			DetectionString: "wordpress",
-			Name: "WordPress",
-			Version: "",
-			Score: 0,
-		},
-		{
-			DetectionString: "woocommerce",
-			Name: "WooCommerce",
-			Version: "",
-			Score: 0,
-		},
-		{
-			DetectionString: "wpml",
-			Name: "WPML",
-			Version: "",
-			Score: 0,
-		},
-		{
-			DetectionString: "elementor",
-			Name: "Elementor",
-			Version: "",
-			Score: 0,
-		},
-		{
-			DetectionString: "powered by wpbakery page builder",
-			Name: "WPBakery Page Builder",
-			Version: "",
-			Score: 0,
-		},
-		{
-			DetectionString: "all in one seo",
-			Name: "All in One SEO (AIOSEO)",
-			Version: "",
-			Score: 0,
-		},
-		{
-			DetectionString: "typo3 cms",
-			Name: "Typo3 CMS",
-			Version: "",
-			Score: 0,
-		},
-		{
-			DetectionString: "drupal",
-			Name: "Drupal",
-			Version: "9",
-			Score: 0,
-		},
-		{
-			DetectionString: "webflow",
-			Name: "Webflow",
-			Version: "",
-			Score: 0,
-		},
-		{
-			DetectionString: "gatsby",
-			Name: "Gatsby",
-			Version: "",
-			Score: 0,
-		},
-		{
-			DetectionString: "astro",
-			Name: "Astro",
-			Version: "",
-			Score: 0,
-		},
-		{
-			DetectionString: "plone",
-			Name: "Plone",
-			Version: "",
-			Score: 0,
-		},
-		{
-			DetectionString: "hugo",
-			Name: "Hugo",
-			Version: "",
-			Score: 0,
-		},
-		{
-			DetectionString: "imperia",
-			Name: "Pirobase Imperia CMS",
-			Version: "",
-			Score: 0,
-		},
-		{
-			DetectionString: "mura",
-			Name: "Mura CMS",
-		},
+func (s *ScanClient) getGeneratorTagTechnologies() ([]Technology, error) {
+	detectedTechnologies, err := file.ReadYAMLIntoStruct[[]Technology](GENERATOR_TECHNOLOGIES_YAML_FILE)
+	if validate.IsErrorState(err) {
+		return CustomOrDefaultError(
+			"yaml technologies wasn't found",
+			err,
+			[]Technology{},
+		)
 	}
 
 
 	// first just a singular example (one url, one factor)
+	// TODO: use http response here
 	resp, err := s.client.R().Get("")
-	if err != nil || resp.IsErrorState() {
+	if validate.IsErrorState(err) || resp.IsErrorState() {
 		return CustomOrDefaultError(
 			"url couldn't be accessed",
 			err,
-			TechnologiesInfo{},
+			[]Technology{},
 		)
 	}
 
@@ -133,7 +55,7 @@ func (s *ScanClient) DetectTechnologies() (TechnologiesInfo, error) {
 		return CustomOrDefaultError(
 			"Error while accessing response",
 			err,
-			TechnologiesInfo{},
+			[]Technology{},
 		)
 	}
 
@@ -160,6 +82,24 @@ func (s *ScanClient) DetectTechnologies() (TechnologiesInfo, error) {
 			}
 		}
 	}
+
+	return detectedTechnologies, nil
+}
+
+func (s *ScanClient) DetectTechnologies() (TechnologiesInfo, error) {
+	// TODO: look at headers (x-powered-by, server, )
+	var detectedTechnologies []Technology
+
+	generatorTechnologies, err := s.getGeneratorTagTechnologies()
+	if validate.IsErrorState(err) {
+		return CustomOrDefaultError(
+			"error while trying to determine technology of site",
+			err,
+			TechnologiesInfo{},
+		)
+	}
+
+	detectedTechnologies = append(detectedTechnologies, generatorTechnologies...)
 
 	// filtering to only the ones found
 	technologiesInfo := TechnologiesInfo{}

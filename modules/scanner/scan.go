@@ -55,7 +55,7 @@ func (s *ScanClient) HostExists(url *url.URL) bool {
 	return err == nil
 }
 
-func CustomOrDefaultError[S ResponseInterfaces](message string, defaultError error, emptyStruct S) (S, error) {
+func CustomOrDefaultError[S any](message string, defaultError error, emptyStruct S) (S, error) {
 	if defaultError == nil {
 		return emptyStruct, errors.New(message)
 	} else {

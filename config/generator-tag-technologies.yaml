@@ -1,0 +1,44 @@
+- name: "WordPress"
+  detection_string: "wordpress"
+
+- name: "WooCommerce"
+  detection_string: "woocommerce"
+
+- name: "WPML"
+  detection_string: "wpml"
+
+- name: "Elementor"
+  detection_string: "elementor"
+
+- name: "WPBakery Page Builder"
+  detection_string: "powered by wpbakery page builder"
+
+- name: "All in One SEO (AIOSEO)"
+  detection_string: "all in one seo"
+
+- name: "Typo3 CMS"
+  detection_string: "typo3 cms"
+
+- name: "Drupal"
+  detection_string: "drupal"
+
+- name: "Webflow"
+  detection_string: "webflow"
+
+- name: "Gatsby"
+  detection_string: "gatsby"
+
+- name: "Astro"
+  detection_string: "astro"
+
+- name: "Plone"
+  detection_string: "plone"
+
+- name: "Hugo"
+  detection_string: "hugo"
+
+- name: "Pirobase Imperia CMS"
+  detection_string: "imperia"
+
+- name: "Mura CMS"
+  detection_string: "mura"
