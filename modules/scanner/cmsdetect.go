@@ -1,11 +1,12 @@
 package scanner
 
 import (
+	"os"
 	"regexp"
 	"strings"
 
-	validate "github.com/3n3a/webscanner-api/modules/validation"
 	file "github.com/3n3a/webscanner-api/modules/file"
+	validate "github.com/3n3a/webscanner-api/modules/validation"
 
 	// "github.com/PuerkitoBio/goquery"
 	"github.com/antchfx/htmlquery"
@@ -13,7 +14,6 @@ import (
 
 const (
 	VERSION_REGEX = `(?m)([0-9.]{3,}|[0-9])([ \n"';,\-\t]{0,1})`
-	GENERATOR_TECHNOLOGIES_YAML_FILE = "./config/generator-tag-technologies.yaml"
 )
 
 
@@ -28,6 +28,7 @@ func (s *ScanClient) getVersionFromString(input string) string {
 }
 
 func (s *ScanClient) getGeneratorTagTechnologies() ([]Technology, error) {
+	GENERATOR_TECHNOLOGIES_YAML_FILE := os.Getenv("GENERATOR_TECHNOLOGIES_YAML_FILE")
 	detectedTechnologies, err := file.ReadYAMLIntoStruct[[]Technology](GENERATOR_TECHNOLOGIES_YAML_FILE)
 	if validate.IsErrorState(err) {
 		return CustomOrDefaultError(
