@@ -3,17 +3,18 @@ package scanner
 import (
 	"fmt"
 	"net"
+	"os"
 
 	"github.com/oschwald/geoip2-golang"
 )
 
 const (
-	GEOIP_CITY_DB_PATH = "./geodb/GeoLite2-City.mmdb"
-	GEOIP_ASN_DB_PATH = "./geodb/GeoLite2-ASN.mmdb"
 	LANG_CODE = "en"
 )
 
 func (s *ScanClient) GetIPInfo(ip net.IP) (IPInfo, error) {
+	GEOIP_CITY_DB_PATH := os.Getenv("GEOIP_CITY_DB_PATH")
+	GEOIP_ASN_DB_PATH := os.Getenv("GEOIP_ASN_DB_PATH")
 	cityDb, err := geoip2.Open(GEOIP_CITY_DB_PATH)
 	if err != nil {
 		fmt.Println("GeoIP City Database couldn't be read")
